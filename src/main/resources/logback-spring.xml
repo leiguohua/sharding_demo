@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false">
+    <springProperty scope="context" name="logLevel" source="logging.level" defaultValue = "debug"/>
+    <springProperty scope="context" name="logPath" source="logging.file" defaultValue="./log"/>
+
+    <property name="log.file.name" value="sharding.log"/>
+    <property name="log.error.file.name" value="error.log"/>
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %green([%-5level])  %magenta([%thread]) %L %blue([%logger{0}:%M]) : %boldWhite(%msg%n)"/>
+    <!--控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+    <!--滚动文件-->
+    <appender name="infoFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/info/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--            <maxFileSize>100MB</maxFileSize>&lt;!&ndash;单个日志文件最大100M，到了这个值，就会再创建一个日志文件，日志文件的名字最后+1&ndash;&gt;-->
+            <maxHistory>30</maxHistory><!--保存最近30天的日志-->
+            <totalSizeCap>20GB</totalSizeCap><!--所有的日志文件最大20G，超过就会删除旧的日志-->
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %L %-5level %logger{36} : %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--滚动文件-->
+    <appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- ThresholdFilter:临界值过滤器，过滤掉 TRACE 和 DEBUG 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/error/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--            <maxFileSize>100MB</maxFileSize>&lt;!&ndash;单个日志文件最大100M，到了这个值，就会再创建一个日志文件，日志文件的名字最后+1&ndash;&gt;-->
+            <maxHistory>30</maxHistory><!--保存最近30天的日志-->
+            <totalSizeCap>20GB</totalSizeCap><!--所有的日志文件最大20G，超过就会删除旧的日志-->
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %L %-5level %logger{36} : %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.mybatis.spring" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="com.sharding.demo.dao" level="DEBUG"/>
+    <logger name="com.baomidou.mybatisplus" level="INFO"/>
+
+    <root level="${logLevel}">
+        <appender-ref ref="console" />
+        <appender-ref ref="infoFile" />
+        <appender-ref ref="errorFile" />
+    </root>
+
+    <springProfile name="pro">
+        <root level="${logLevel}">
+            <appender-ref ref="infoFile" />
+            <appender-ref ref="errorFile" />
+        </root>
+    </springProfile>
+</configuration>
