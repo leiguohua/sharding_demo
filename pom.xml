@@ -12,6 +12,7 @@
        <!-- <sharding-sphere.version>4.0.0-RC1</sharding-sphere.version>-->
         <!-- RC2 或者RC3 搭配 MyBatis、com.alibaba.druid（非springboot版本）使用-->
         <sharding-sphere.version>4.0.0-RC2</sharding-sphere.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <parent>
@@ -118,4 +119,16 @@
             <version>2.9.2</version>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>sharding-api</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
